@@ -1,0 +1,581 @@
+import React, { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
+import Dropdown from 'react-bootstrap/Dropdown';
+
+const PAGE_SIZE = 10; // Number of records per page
+
+function App() {
+  const [employeesData, setEmployeesData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [selectedGender, setSelectedGender] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let response = await fetch('https://dummyjson.com/users');
+        let userData = await response.json();
+        // setEmployeesData(userData.users);
+        setFilteredData(userData.users);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (selectedGender === '') {
+      setFilteredData(employeesData);
+    } else {
+      setFilteredData(employeesData.filter(item => item.gender === selectedGender));
+    }
+    setCurrentPage(1); // Reset to the first page when filtering
+  }, [selectedGender, employeesData]);
+
+  const changeGender = (gender) => {
+    setSelectedGender(gender);
+  };
+
+ 
+
+  return (
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col">
+          <h1>Employees</h1>
+        </div>
+        <div className="col">
+          <div className="filters">
+            <div className='filter-icon'>
+            <i className="fas fa-filter"></i>
+            </div>
+          <Dropdown>
+              <Dropdown.Toggle className='' variant="dark" id="dropdown-basic">
+                Country
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {
+                  employeesData.map((dropdownItem)=>
+                    <Dropdown.Item to="/">{dropdownItem.address.country}</Dropdown.Item>
+                  )
+                }
+              </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown>
+              <Dropdown.Toggle variant="dark" id="dropdown-basic">
+                Gender
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => changeGender('male')}>Male</Dropdown.Item>
+                <Dropdown.Item onClick={() => changeGender('female')}>Female</Dropdown.Item>
+                <Dropdown.Item onClick={() => changeGender('')}>All</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </div>
+      </div>
+      <table className="table mt-5" style={{ borderRadius: '15px', overflow: 'hidden' }}>
+        <thead>
+          <tr>
+            <th>ID <i class="fa-solid fa-sort"></i></th>
+            <th>Image</th>
+            <th>Full Name <i class="fa-solid fa-sort"></i></th>
+            <th>Demography</th>
+            <th>Designation</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.map((item) => (
+            <tr key={item.id}>
+              <td>{item.id}</td>
+              <td><img src={item.image} alt="placeholder" className="rounded-circle" height='35px' width='35px' /></td>
+              <td>{item.firstName} {item.lastName}</td>
+              <td>{item.gender === "male" ? "M" : "F"}/{item.age}</td>
+              <td>{item.company.title}</td>
+              <td>{item.address.state}, {item.address.country === "United States" ? "USA" : ''}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+
+
+
+
+
+
+
+***************Second Updated ***************************
+
+import React, { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
+import Dropdown from 'react-bootstrap/Dropdown';
+
+
+function App() {
+  const [employeesData, setEmployeesData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [selectedGender, setSelectedGender] = useState('');
+
+  // fetch all the data here 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let response = await fetch('https://dummyjson.com/users');
+        let userData = await response.json();
+        // setEmployeesData(userData.users);
+        setEmployeesData(userData.users);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+  // filter the data gender wise.
+
+  useEffect(() => {
+    if (selectedGender === '') {
+      setFilteredData(employeesData);
+    } else {
+      setFilteredData(employeesData.filter(item => item.gender === selectedGender));
+    }
+  }, [selectedGender, employeesData]);
+
+  const changeGender = (gender) => {
+    setSelectedGender(gender);
+  };
+
+
+
+  return (
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col">
+          <h1>Employees</h1>
+        </div>
+        <div className="col">
+          <div className="filters">
+            <div className='filter-icon'>
+              <i className="fas fa-filter"></i>
+            </div>
+
+            <Dropdown>
+              <Dropdown.Toggle variant="dark">
+                Country
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {
+                  employeesData.map((dropdownItem) =>
+                    <Dropdown.Item to="/">{dropdownItem.address.country}</Dropdown.Item>
+                  )
+                }
+              </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown>
+              <Dropdown.Toggle variant="dark" id="dropdown-basic">
+                Gender
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => changeGender('male')}>Male</Dropdown.Item>
+                <Dropdown.Item onClick={() => changeGender('female')}>Female</Dropdown.Item>
+                <Dropdown.Item onClick={() => changeGender('')}>All</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </div>
+      </div>
+      <table className="table mt-5" style={{ borderRadius: '15px', overflow: 'hidden' }}>
+        <thead>
+          <tr>
+            <th>ID <i className="fa-solid fa-sort"></i></th>
+            <th>Image</th>
+            <th>Full Name <i className="fa-solid fa-sort"></i></th>
+            <th>Demography</th>
+            <th>Designation</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.map((item) => (
+            <tr key={item.id}>
+              
+              {/* if the ID is less than 10 add the  0 before id,
+              otherwise shoow the ID. */}
+
+              <td>{item.id < 10 ? `0${item.id}` : item.id}</td>
+              <td><img src={item.image} alt="placeholder" className="rounded-circle" height='35px' width='35px' /></td>
+              <td>{item.firstName} {item.lastName}</td>
+              <td>{item.gender === "male" ? "M" : "F"}/{item.age}</td>
+              <td>{item.company.title}</td>
+              <td>{item.address.state}, {item.address.country === "United States" ? "USA" : ''}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+
+********************************third updated ******************************
+
+import React, { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
+import Dropdown from 'react-bootstrap/Dropdown';
+
+
+function App() {
+  const [employeesData, setEmployeesData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [selectedGender, setSelectedGender] = useState('');
+  const [sortId, setSortId] = useState('asc');
+
+  // fetch all the data here 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let response = await fetch('https://dummyjson.com/users');
+        let userData = await response.json();
+        // setEmployeesData(userData.users);
+        setEmployeesData(userData.users);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+  // filter the data gender wise.
+
+  useEffect(() => {
+    if (selectedGender === '') {
+      setFilteredData(employeesData);
+    } else {
+      setFilteredData(employeesData.filter(item => item.gender === selectedGender));
+    }
+  }, [selectedGender, employeesData]);
+
+  const changeGender = (gender) => {
+    setSelectedGender(gender);
+  };
+
+  const sortDataById = () => {
+    const order = sortId === 'asc' ? 'desc' : 'asc';
+    // console.log("new sorted data.",order)
+    setSortId(order);
+  
+    const sortedData = [...filteredData].sort((a, b) => {
+
+      return order === 'asc' ? a.id - b.id : b.id - a.id; // Sort data
+    });
+    console.log(order)
+  
+    setFilteredData(sortedData); // Update state with sorted data
+
+    console.log("reset data.",sortedData)
+  };
+  
+
+  return (
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col">
+          <h1>Employees</h1>
+        </div>
+        <div className="col">
+          <div className="filters">
+            <div className='filter-icon'>
+              <i className="fas fa-filter"></i>
+            </div>
+
+            <Dropdown>
+              <Dropdown.Toggle variant="dark">
+                Country
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {
+                  employeesData.map((dropdownItem) =>
+                    <Dropdown.Item to="/">{dropdownItem.address.country}</Dropdown.Item>
+                  )
+                }
+              </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown>
+              <Dropdown.Toggle variant="dark" id="dropdown-basic">
+                Gender
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => changeGender('male')}>Male</Dropdown.Item>
+                <Dropdown.Item onClick={() => changeGender('female')}>Female</Dropdown.Item>
+                <Dropdown.Item onClick={() => changeGender('')}>All</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </div>
+      </div>
+      <table className="table mt-5" style={{ borderRadius: '15px', overflow: 'hidden' }}>
+        <thead>
+          <tr>
+            <th onClick={sortDataById}>ID <i className="fa-solid fa-sort"></i></th>
+            <th>Image</th>
+            <th>Full Name <i className="fa-solid fa-sort"></i></th>
+            <th>Demography</th>
+            <th>Designation</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.map((item) => (
+            <tr key={item.id}>
+              
+              {/* if the ID is less than 10 add the  0 before id,
+              otherwise shoow the ID. */}
+
+              <td>{item.id < 10 ? `0${item.id}` : item.id}</td>
+              <td><img src={item.image} alt="placeholder" className="rounded-circle" height='35px' width='35px' /></td>
+              <td>{item.firstName} {item.lastName}</td>
+              <td>{item.gender === "male" ? "M" : "F"}/{item.age}</td>
+              <td>{item.company.title}</td>
+              <td>{item.address.state}, {item.address.country === "United States" ? "USA" : ''}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export default App;
+
+
+
+************************fourth update****************************************
+
+import React, { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Navbar  from './Components/Navbar.js';
+
+function App() {
+  const [employeesData, setEmployeesData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [selectedGender, setSelectedGender] = useState('');
+  //accending and deccendig order, below states
+  const [sortAgeOrder, setSortAge] = useState('asc');
+  const [sortId, setSortId] = useState('asc');
+  const [sortName, setSortName] = useState('asc');
+
+  // below states are for pagination.
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 10;
+
+  // Fetch all the data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let response = await fetch('https://dummyjson.com/users');
+        let userData = await response.json();
+        setEmployeesData(userData.users);
+        setFilteredData(userData.users);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Filter the data gender-wise
+  useEffect(() => {
+    {
+      selectedGender === '' ? setFilteredData(employeesData) :  setFilteredData(employeesData.filter(item => item.gender === selectedGender));
+    }
+    setCurrentPage(1); 
+  }, [selectedGender, employeesData]);
+
+  // Handle sorting by ID
+  const sortDataById = () => {
+    const order = sortId === 'asc' ? 'desc' : 'asc';
+    setSortId(order);
+
+    const sortedData = [...filteredData].sort((a, b) => {
+      return order === 'asc' ? a.id - b.id : b.id - a.id;
+    });
+
+    setFilteredData(sortedData);
+  };
+
+
+  //sort by age
+  const sortDataByAge = () => {
+    const order = sortAgeOrder === 'asc' ? 'desc' : 'asc';
+    setSortAge(order);
+
+    const sortedData = [...filteredData].sort((a, b) => {
+      return order === 'asc' ? a.age - b.age : b.age - a.age;
+    });
+
+    setFilteredData(sortedData);
+  };
+
+  // Handle sorting by Full Name
+  const sortDataByName = () => {
+    const order = sortName === 'asc' ? 'desc' : 'asc';
+    setSortName(order);
+
+    const sortedData = [...filteredData].sort((a, b) => {
+      const nameA = `${a.firstName} ${a.lastName}`.toUpperCase();
+      const nameB = `${b.firstName} ${b.lastName}`.toUpperCase();
+      if (order === 'asc') {
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+      } else {
+        if (nameA > nameB) return -1;
+        if (nameA < nameB) return 1;
+        return 0;
+      }
+    });
+
+    setFilteredData(sortedData);
+  };
+
+  const changeGender = (gender) => {
+    setSelectedGender(gender);
+  };
+
+  // Pagination 
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  console.log("last rec..", indexOfLastRecord)
+
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  console.log("1st record", indexOfFirstRecord)
+
+  const currentRecords = filteredData.slice(indexOfFirstRecord, indexOfLastRecord);
+  console.log("current rec ", currentRecords)
+
+  const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+  console.log("total pages", totalPages)
+
+
+  // btn for change the page 
+  const nextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+
+
+  return (
+    <>
+    <div className="container parent-container mt-5">
+     <Navbar />
+      <div className="row">
+        <div className="col">
+          <h1>Employees</h1>
+        </div>
+        <div className="col">
+          <div className="filters">
+            <div className='filter-icon'>
+            <i className="fa-solid fa-filter"></i>
+            </div>
+            <Dropdown>
+              <Dropdown.Toggle variant="dark">
+                Country
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                {
+                  employeesData.map((dropdownItem) =>
+                    <Dropdown.Item to="/">{dropdownItem.address.state}</Dropdown.Item>
+                  )
+                }
+              </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown>
+              <Dropdown.Toggle variant="dark">
+                Gender
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => changeGender('male')}>Male</Dropdown.Item>
+                <Dropdown.Item onClick={() => changeGender('female')}>Female</Dropdown.Item>
+                <Dropdown.Item onClick={() => changeGender('')}>All</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </div>
+      </div>
+      <div className='mt-5' style={{ borderRadius: '20px', border: '1px solid #e0e0e0', padding: '24px' }}>
+        <table className="table">
+          <thead>
+            <tr>
+              <th onClick={sortDataById}>ID <i className="fa-solid fa-sort"></i></th>
+              <th>Image</th>
+              <th onClick={sortDataByName}>Full Name <i className="fa-solid fa-sort"></i></th>
+              <th onClick={sortDataByAge}>Demography</th>
+              <th>Designation</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentRecords.map((item) => (
+              <tr key={item.id}>
+                <td>{item.id < 10 ? `0${item.id}` : item.id}</td>
+                <td>
+                  <img
+                    src={item.image}
+                    alt="placeholder"
+                    className="rounded-circle"
+                    height='45px'
+                    width='45px'
+                  />
+                </td>
+                <td>{item.firstName} {item.lastName}</td>
+                <td>{item.gender === "male" ? "M" : "F"}/{item.age}</td>
+                <td>{item.company.title}</td>
+                <td>{item.address.state}, {item.address.country === "United States" ? "USA" : ''}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="pagination mt-4">
+        <button onClick={prevPage} >Previous</button>
+        <span> Page {currentPage} of {totalPages} </span>
+        <button onClick={nextPage}>Next</button>
+      </div>
+    </div>
+    </>
+  );
+}
+
+export default App;

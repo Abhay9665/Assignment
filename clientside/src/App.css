@@ -1,0 +1,30 @@
+
+.parent-container{
+  border: 1px solid #d3d3d3;
+  padding: 20px;
+}
+.navbar-toggler{
+  background-color: #f84141;
+}
+.filters{
+  display: flex;
+  gap: 20px;
+  justify-content: end;
+}
+
+.filter-icon{
+  text-align: end;
+}
+
+.filter-icon i{
+  color: rgb(231, 78, 78);
+  font-size: 28px;
+  
+}
+.rounded-circle{
+  border-radius: 50%;
+}
+.dropdown-toggle{
+  background-color: #fff;
+  color: black;
+}
